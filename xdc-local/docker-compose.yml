@@ -1,0 +1,134 @@
+version: "3.8"
+networks:
+  xdcnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16
+services:
+  bootnode:
+    image: xinfinorg/xdposchain:latest
+    container_name: xdc-bootnode
+    entrypoint: ""
+    networks:
+      xdcnet:
+        ipv4_address: 172.25.0.2
+    command: >
+      /usr/bin/XDC-devnet 
+      --datadir /root/.xdpos 
+      --networkid 2025  
+      --port 30301 
+      --bootnodes enode://9170e681f4da5705cbe8e0d2bb4bf7b38b957b31baf0c9759f56ec4a2972d5b979f8015e9b822d54b688e1f6d0ca9c54d05e66a2ffcaff55ba12793d58480a36@172.25.0.2:30301 
+      --unlock 0 
+      --etherbase xdc777a7ec18c7787d9cfed77349445927a73791233
+      --password /root/.xdpos/.pwd 
+      --mine
+    volumes:
+      - ./keys/bootnode:/root/.xdpos
+      - ./genesis.json:/root/.xdpos/genesis.json
+      - ./keys/.pwd:/root/.xdpos/.pwd
+    ports:
+      - "30301:30301"
+      - "8545:8545"
+
+  node1:
+    image: xinfinorg/xdposchain:latest
+    container_name: xdc-node1
+    entrypoint: ""
+    networks:
+      xdcnet:
+        ipv4_address: 172.25.0.3
+    depends_on:
+      - bootnode
+    command: >
+      /usr/bin/XDC-devnet 
+      --datadir /root/.xdpos 
+      --networkid 2025 
+      --rpc
+      --rpcaddr 0.0.0.0
+      --rpcport 8546
+      --rpcapi admin,eth,net,web3,txpool,personal,XDPoS
+      --rpccorsdomain *
+      --rpcvhosts *
+      --rpc-gascap 100000000
+      --bootnodes enode://9170e681f4da5705cbe8e0d2bb4bf7b38b957b31baf0c9759f56ec4a2972d5b979f8015e9b822d54b688e1f6d0ca9c54d05e66a2ffcaff55ba12793d58480a36@172.25.0.2:30301
+      --etherbase xdc65120334D967b1BD3C4C8c7e3b78bef360cDB73D
+      --port 30302 
+      --unlock 0 
+      --password /root/.xdpos/.pwd 
+      --mine
+    volumes:
+      - ./keys/node1:/root/.xdpos
+      - ./genesis.json:/root/.xdpos/genesis.json
+      - ./keys/.pwd:/root/.xdpos/.pwd
+    ports:
+      - "30302:30302"
+      - "8546:8546"
+
+  node2:
+    image: xinfinorg/xdposchain:latest
+    container_name: xdc-node2
+    entrypoint: ""
+    networks:
+      xdcnet:
+        ipv4_address: 172.25.0.4
+    depends_on:
+      - bootnode
+    command: >
+      /usr/bin/XDC-devnet 
+      --datadir /root/.xdpos 
+      --networkid 2025 
+      --rpc
+      --rpcaddr 0.0.0.0
+      --rpcport 8547
+      --rpcapi admin,eth,net,web3,txpool,personal,XDPoS
+      --rpccorsdomain *
+      --rpcvhosts *
+      --rpc-gascap 100000000
+      --bootnodes enode://9170e681f4da5705cbe8e0d2bb4bf7b38b957b31baf0c9759f56ec4a2972d5b979f8015e9b822d54b688e1f6d0ca9c54d05e66a2ffcaff55ba12793d58480a36@172.25.0.2:30301
+      --etherbase xdcc5139c89013235289d4628243bf40935afb0acd7
+      --port 30303 
+      --unlock 0 
+      --password /root/.xdpos/.pwd 
+      --mine
+    volumes:
+      - ./keys/node2:/root/.xdpos
+      - ./genesis.json:/root/.xdpos/genesis.json
+      - ./keys/.pwd:/root/.xdpos/.pwd
+    ports:
+      - "30303:30303"
+      - "8547:8547"
+
+  node3:
+    image: xinfinorg/xdposchain:latest
+    container_name: xdc-node3
+    entrypoint: ""
+    networks:
+      xdcnet:
+        ipv4_address: 172.25.0.5
+    depends_on:
+      - bootnode
+    command: >
+      /usr/bin/XDC-devnet 
+      --datadir /root/.xdpos 
+      --networkid 2025 
+      --rpc
+      --rpcaddr 0.0.0.0
+      --rpcport 8548
+      --rpcapi admin,eth,net,web3,txpool,personal,XDPoS
+      --rpccorsdomain *
+      --rpcvhosts *
+      --rpc-gascap 100000000
+      --bootnodes enode://9170e681f4da5705cbe8e0d2bb4bf7b38b957b31baf0c9759f56ec4a2972d5b979f8015e9b822d54b688e1f6d0ca9c54d05e66a2ffcaff55ba12793d58480a36@172.25.0.2:30301
+      --etherbase xdc332bdfddf2575ff83ae3a996c24893fbabf5a0c9
+      --port 30304 
+      --unlock 0 
+      --password /root/.xdpos/.pwd 
+      --mine
+    volumes:
+      - ./keys/node3:/root/.xdpos
+      - ./genesis.json:/root/.xdpos/genesis.json
+      - ./keys/.pwd:/root/.xdpos/.pwd
+    ports:
+      - "30304:30304"
+      - "8548:8548"
