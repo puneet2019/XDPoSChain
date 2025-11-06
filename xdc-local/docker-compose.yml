@@ -18,7 +18,7 @@ services:
       --datadir /root/.xdpos 
       --networkid 2025  
       --port 30301 
-      --bootnodes enode://9170e681f4da5705cbe8e0d2bb4bf7b38b957b31baf0c9759f56ec4a2972d5b979f8015e9b822d54b688e1f6d0ca9c54d05e66a2ffcaff55ba12793d58480a36@172.25.0.2:30301 
+      --bootnodes enode://061b9422eb04e838bded2435c6e1cb7e45d018bed6cc64241f8c5f7493ff300c03e5dcdade28558131ec53230df7b892d0fb98bb059ae02320f86f13cc00350a@172.25.0.2:30301 
       --unlock 0 
       --etherbase xdc777a7ec18c7787d9cfed77349445927a73791233
       --password /root/.xdpos/.pwd 
@@ -51,7 +51,7 @@ services:
       --rpccorsdomain *
       --rpcvhosts *
       --rpc-gascap 100000000
-      --bootnodes enode://9170e681f4da5705cbe8e0d2bb4bf7b38b957b31baf0c9759f56ec4a2972d5b979f8015e9b822d54b688e1f6d0ca9c54d05e66a2ffcaff55ba12793d58480a36@172.25.0.2:30301
+      --bootnodes enode://061b9422eb04e838bded2435c6e1cb7e45d018bed6cc64241f8c5f7493ff300c03e5dcdade28558131ec53230df7b892d0fb98bb059ae02320f86f13cc00350a@172.25.0.2:30301
       --etherbase xdc65120334D967b1BD3C4C8c7e3b78bef360cDB73D
       --port 30302 
       --unlock 0 
@@ -85,7 +85,7 @@ services:
       --rpccorsdomain *
       --rpcvhosts *
       --rpc-gascap 100000000
-      --bootnodes enode://9170e681f4da5705cbe8e0d2bb4bf7b38b957b31baf0c9759f56ec4a2972d5b979f8015e9b822d54b688e1f6d0ca9c54d05e66a2ffcaff55ba12793d58480a36@172.25.0.2:30301
+      --bootnodes enode://061b9422eb04e838bded2435c6e1cb7e45d018bed6cc64241f8c5f7493ff300c03e5dcdade28558131ec53230df7b892d0fb98bb059ae02320f86f13cc00350a@172.25.0.2:30301
       --etherbase xdcc5139c89013235289d4628243bf40935afb0acd7
       --port 30303 
       --unlock 0 
@@ -119,7 +119,7 @@ services:
       --rpccorsdomain *
       --rpcvhosts *
       --rpc-gascap 100000000
-      --bootnodes enode://9170e681f4da5705cbe8e0d2bb4bf7b38b957b31baf0c9759f56ec4a2972d5b979f8015e9b822d54b688e1f6d0ca9c54d05e66a2ffcaff55ba12793d58480a36@172.25.0.2:30301
+      --bootnodes enode://061b9422eb04e838bded2435c6e1cb7e45d018bed6cc64241f8c5f7493ff300c03e5dcdade28558131ec53230df7b892d0fb98bb059ae02320f86f13cc00350a@172.25.0.2:30301
       --etherbase xdc332bdfddf2575ff83ae3a996c24893fbabf5a0c9
       --port 30304 
       --unlock 0 

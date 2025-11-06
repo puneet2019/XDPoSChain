@@ -11,7 +11,7 @@ expect "Which consensus engine"
 send "3\r"
 
 expect "How many seconds should blocks take?"
-send "2\r"
+send "1\r"
 
 expect "How many Ethers should be rewarded to masternode?"
 send "100\r"
