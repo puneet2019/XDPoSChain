@@ -105,3 +105,5 @@ after which the blocktime increases and TPS decreases.
 Increasing blocktime to 3 sec -> gives more consistent higher tps, but the network gets clogged sooner, and blocks get delayed.
 
 In most tests, blocks did not hit block gas limits, and it is not considered as a constraint.
+
+All tests (3nodes +1bootnode + scripts) were done on a local machine. As the TPS scripts ran- machine constantly hit CPU limits.
