@@ -22,37 +22,38 @@ import (
 )
 
 const (
-	errInvalidMsgCode = iota
-	errInvalidMsg
+	ErrInvalidMsgCode = iota
+	ErrInvalidMsg
 )
 
-var errorToString = map[int]string{
-	errInvalidMsgCode: "invalid message code",
-	errInvalidMsg:     "invalid message",
+var ErrorToString = map[int]string{
+	ErrInvalidMsgCode: "invalid message code",
+	ErrInvalidMsg:     "invalid message",
 }
 
-type peerError struct {
-	code    int
-	message string
+// PeerError represents an error that occurred during peer communication
+type PeerError struct {
+	Code    int
+	Message string
 }
 
-func newPeerError(code int, format string, v ...interface{}) *peerError {
-	desc, ok := errorToString[code]
+func newPeerError(code int, format string, v ...interface{}) *PeerError {
+	desc, ok := ErrorToString[code]
 	if !ok {
 		panic("invalid error code")
 	}
-	err := &peerError{code, desc}
+	err := &PeerError{Code: code, Message: desc}
 	if format != "" {
-		err.message += ": " + fmt.Sprintf(format, v...)
+		err.Message += ": " + fmt.Sprintf(format, v...)
 	}
 	return err
 }
 
-func (e *peerError) Error() string {
-	return e.message
+func (e *PeerError) Error() string {
+	return e.Message
 }
 
-var errProtocolReturned = errors.New("protocol returned")
+var ErrProtocolReturned = errors.New("protocol returned")
 
 var ErrAddPairPeer = errors.New("add a pair peer")
 
@@ -75,7 +76,7 @@ const (
 	DiscSubprotocolError = 0x10
 )
 
-var discReasonToString = [...]string{
+var DiscReasonToString = [...]string{
 	DiscRequested:           "disconnect requested",
 	DiscNetworkError:        "network error",
 	DiscProtocolError:       "breach of protocol",
@@ -93,10 +94,10 @@ var discReasonToString = [...]string{
 }
 
 func (d DiscReason) String() string {
-	if len(discReasonToString) <= int(d) || int(d) < 0 {
+	if len(DiscReasonToString) <= int(d) || int(d) < 0 {
 		return fmt.Sprintf("unknown disconnect reason %d", d)
 	}
-	return discReasonToString[int(d)]
+	return DiscReasonToString[int(d)]
 }
 
 func (d DiscReason) Error() string {
@@ -107,13 +108,13 @@ func discReasonForError(err error) DiscReason {
 	if reason, ok := err.(DiscReason); ok {
 		return reason
 	}
-	if err == errProtocolReturned {
+	if err == ErrProtocolReturned {
 		return DiscQuitting
 	}
-	peerError, ok := err.(*peerError)
+	peerError, ok := err.(*PeerError)
 	if ok {
-		switch peerError.code {
-		case errInvalidMsgCode, errInvalidMsg:
+		switch peerError.Code {
+		case ErrInvalidMsgCode, ErrInvalidMsg:
 			return DiscProtocolError
 		default:
 			return DiscSubprotocolError

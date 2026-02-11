@@ -375,7 +375,7 @@ func (p *peer) AsyncSendSyncInfo() {
 // RequestOneHeader is a wrapper around the header query functions to fetch a
 // single header. It is used solely by the fetcher.
 func (p *peer) RequestOneHeader(hash common.Hash) error {
-	p.Log().Debug("Fetching single header", "hash", hash)
+	p.GetLog().Debug("Fetching single header", "hash", hash)
 	if p.pairRw != nil {
 		return p2p.Send(p.pairRw, GetBlockHeadersMsg, &getBlockHeadersData{Origin: hashOrNumber{Hash: hash}, Amount: uint64(1), Skip: uint64(0), Reverse: false})
 	} else {
@@ -386,7 +386,7 @@ func (p *peer) RequestOneHeader(hash common.Hash) error {
 // RequestHeadersByHash fetches a batch of blocks' headers corresponding to the
 // specified header query, based on the hash of an origin block.
 func (p *peer) RequestHeadersByHash(origin common.Hash, amount int, skip int, reverse bool) error {
-	p.Log().Debug("Fetching batch of headers", "count", amount, "fromhash", origin, "skip", skip, "reverse", reverse)
+	p.GetLog().Debug("Fetching batch of headers", "count", amount, "fromhash", origin, "skip", skip, "reverse", reverse)
 	if p.pairRw != nil {
 		return p2p.Send(p.pairRw, GetBlockHeadersMsg, &getBlockHeadersData{Origin: hashOrNumber{Hash: origin}, Amount: uint64(amount), Skip: uint64(skip), Reverse: reverse})
 	} else {
@@ -397,7 +397,7 @@ func (p *peer) RequestHeadersByHash(origin common.Hash, amount int, skip int, re
 // RequestHeadersByNumber fetches a batch of blocks' headers corresponding to the
 // specified header query, based on the number of an origin block.
 func (p *peer) RequestHeadersByNumber(origin uint64, amount int, skip int, reverse bool) error {
-	p.Log().Debug("Fetching batch of headers", "count", amount, "fromnum", origin, "skip", skip, "reverse", reverse)
+	p.GetLog().Debug("Fetching batch of headers", "count", amount, "fromnum", origin, "skip", skip, "reverse", reverse)
 	if p.pairRw != nil {
 		return p2p.Send(p.pairRw, GetBlockHeadersMsg, &getBlockHeadersData{Origin: hashOrNumber{Number: origin}, Amount: uint64(amount), Skip: uint64(skip), Reverse: reverse})
 	} else {
@@ -408,7 +408,7 @@ func (p *peer) RequestHeadersByNumber(origin uint64, amount int, skip int, rever
 // RequestBodies fetches a batch of blocks' bodies corresponding to the hashes
 // specified.
 func (p *peer) RequestBodies(hashes []common.Hash) error {
-	p.Log().Debug("Fetching batch of block bodies", "count", len(hashes))
+	p.GetLog().Debug("Fetching batch of block bodies", "count", len(hashes))
 	if p.pairRw != nil {
 		return p2p.Send(p.pairRw, GetBlockBodiesMsg, hashes)
 	} else {
@@ -419,7 +419,7 @@ func (p *peer) RequestBodies(hashes []common.Hash) error {
 // RequestNodeData fetches a batch of arbitrary data from a node's known state
 // data, corresponding to the specified hashes.
 func (p *peer) RequestNodeData(hashes []common.Hash) error {
-	p.Log().Debug("Fetching batch of state data", "count", len(hashes))
+	p.GetLog().Debug("Fetching batch of state data", "count", len(hashes))
 	if p.pairRw != nil {
 		return p2p.Send(p.pairRw, GetNodeDataMsg, hashes)
 	} else {
@@ -429,7 +429,7 @@ func (p *peer) RequestNodeData(hashes []common.Hash) error {
 
 // RequestReceipts fetches a batch of transaction receipts from a remote node.
 func (p *peer) RequestReceipts(hashes []common.Hash) error {
-	p.Log().Debug("Fetching batch of receipts", "count", len(hashes))
+	p.GetLog().Debug("Fetching batch of receipts", "count", len(hashes))
 	if p.pairRw != nil {
 		return p2p.Send(p.pairRw, GetReceiptsMsg, hashes)
 	} else {

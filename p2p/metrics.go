@@ -69,9 +69,9 @@ func markDialError(err error) {
 		dialUselessPeer.Mark(1)
 	case DiscUnexpectedIdentity:
 		dialUnexpectedIdentity.Mark(1)
-	case errEncHandshakeError:
+	case ErrEncHandshakeError:
 		dialEncHandshakeError.Mark(1)
-	case errProtoHandshakeError:
+	case ErrProtoHandshakeError:
 		dialProtoHandshakeError.Mark(1)
 	}
 }

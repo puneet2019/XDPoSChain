@@ -42,9 +42,9 @@ type Msg struct {
 	Payload    io.Reader
 	ReceivedAt time.Time
 
-	meterCap  Cap    // Protocol name and version for egress metering
-	meterCode uint64 // Message within protocol for egress metering
-	meterSize uint32 // Compressed message size for ingress metering
+	MeterCap  Cap    // Protocol name and version for egress metering
+	MeterCode uint64 // Message within protocol for egress metering
+	MeterSize uint32 // Compressed message size for ingress metering
 }
 
 // Decode parses the RLP content of a message into
@@ -54,7 +54,7 @@ type Msg struct {
 func (m Msg) Decode(val interface{}) error {
 	s := rlp.NewStream(m.Payload, uint64(m.Size))
 	if err := s.Decode(val); err != nil {
-		return newPeerError(errInvalidMsg, "(code %x) (size %d) %v", m.Code, m.Size, err)
+		return newPeerError(ErrInvalidMsg, "(code %x) (size %d) %v", m.Code, m.Size, err)
 	}
 	return nil
 }
@@ -112,35 +112,35 @@ func SendItems(w MsgWriter, msgcode uint64, elems ...interface{}) error {
 	return Send(w, msgcode, elems)
 }
 
-// eofSignal wraps a reader with eof signaling. the eof channel is
+// EofSignal wraps a reader with eof signaling. the eof channel is
 // closed when the wrapped reader returns an error or when count bytes
 // have been read.
-type eofSignal struct {
-	wrapped io.Reader
-	count   uint32 // number of bytes left
-	eof     chan<- struct{}
+type EofSignal struct {
+	Wrapped io.Reader
+	Count   uint32 // number of bytes left
+	Eof     chan<- struct{}
 }
 
 // note: when using eofSignal to detect whether a message payload
 // has been read, Read might not be called for zero sized messages.
-func (s *eofSignal) Read(buf []byte) (int, error) {
-	if s.count == 0 {
-		if s.eof != nil {
-			s.eof <- struct{}{}
-			s.eof = nil
+func (s *EofSignal) Read(buf []byte) (int, error) {
+	if s.Count == 0 {
+		if s.Eof != nil {
+			s.Eof <- struct{}{}
+			s.Eof = nil
 		}
 		return 0, io.EOF
 	}
 
 	max := len(buf)
-	if int(s.count) < len(buf) {
-		max = int(s.count)
+	if int(s.Count) < len(buf) {
+		max = int(s.Count)
 	}
-	n, err := s.wrapped.Read(buf[:max])
-	s.count -= uint32(n)
-	if (err != nil || s.count == 0) && s.eof != nil {
-		s.eof <- struct{}{} // tell Peer that msg has been consumed
-		s.eof = nil
+	n, err := s.Wrapped.Read(buf[:max])
+	s.Count -= uint32(n)
+	if (err != nil || s.Count == 0) && s.Eof != nil {
+		s.Eof <- struct{}{} // tell Peer that msg has been consumed
+		s.Eof = nil
 	}
 	return n, err
 }
@@ -176,7 +176,7 @@ type MsgPipeRW struct {
 func (p *MsgPipeRW) WriteMsg(msg Msg) error {
 	if atomic.LoadInt32(p.closed) == 0 {
 		consumed := make(chan struct{}, 1)
-		msg.Payload = &eofSignal{msg.Payload, msg.Size, consumed}
+		msg.Payload = &EofSignal{msg.Payload, msg.Size, consumed}
 		select {
 		case p.w <- msg:
 			if msg.Size > 0 {

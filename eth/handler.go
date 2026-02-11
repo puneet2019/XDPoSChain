@@ -346,7 +346,7 @@ func (pm *ProtocolManager) handle(p *peer) error {
 	if pm.peers.Len() >= pm.maxPeers && !p.Peer.Info().Network.Trusted {
 		return p2p.DiscTooManyPeers
 	}
-	p.Log().Debug("Ethereum peer connected", "name", p.Name())
+	p.GetLog().Debug("Ethereum peer connected", "name", p.Name())
 
 	// Execute the Ethereum handshake
 	var (
@@ -357,7 +357,7 @@ func (pm *ProtocolManager) handle(p *peer) error {
 		td      = pm.blockchain.GetTd(hash, number)
 	)
 	if err := p.Handshake(pm.networkId, td, hash, genesis.Hash()); err != nil {
-		p.Log().Debug("Ethereum handshake failed", "err", err)
+		p.GetLog().Debug("Ethereum handshake failed", "err", err)
 		return err
 	}
 	if rw, ok := p.rw.(*meteredMsgReadWriter); ok {
@@ -366,7 +366,7 @@ func (pm *ProtocolManager) handle(p *peer) error {
 	// Register the peer locally
 	err := pm.peers.Register(p)
 	if err != nil && err != p2p.ErrAddPairPeer {
-		p.Log().Error("Ethereum peer registration failed", "err", err)
+		p.GetLog().Error("Ethereum peer registration failed", "err", err)
 		return err
 	}
 	defer pm.removePeer(p.id)
@@ -387,7 +387,7 @@ func (pm *ProtocolManager) handle(p *peer) error {
 			}
 			// Start a timer to disconnect if the peer doesn't reply in time
 			p.forkDrop = time.AfterFunc(daoChallengeTimeout, func() {
-				p.Log().Debug("Timed out DAO fork-check, dropping")
+				p.GetLog().Debug("Timed out DAO fork-check, dropping")
 				pm.removePeer(p.id)
 			})
 			// Make sure it's cleaned up if the peer dies off
@@ -402,7 +402,7 @@ func (pm *ProtocolManager) handle(p *peer) error {
 	// main loop. handle incoming messages.
 	for {
 		if err := pm.handleMsg(p); err != nil {
-			p.Log().Debug("Ethereum message handling failed", "err", err)
+			p.GetLog().Debug("Ethereum message handling failed", "err", err)
 			return err
 		}
 	}
@@ -478,7 +478,7 @@ func (pm *ProtocolManager) handleMsg(p *peer) error {
 				)
 				if next <= current {
 					infos, _ := json.MarshalIndent(p.Peer.Info(), "", "  ")
-					p.Log().Warn("GetBlockHeaders skip overflow attack", "current", current, "skip", query.Skip, "next", next, "attacker", infos)
+					p.GetLog().Warn("GetBlockHeaders skip overflow attack", "current", current, "skip", query.Skip, "next", next, "attacker", infos)
 					unknown = true
 				} else {
 					if header := pm.blockchain.GetHeaderByNumber(next); header != nil {
@@ -526,7 +526,7 @@ func (pm *ProtocolManager) handleMsg(p *peer) error {
 			}
 			// If we're seemingly on the same chain, disable the drop timer
 			if verifyDAO {
-				p.Log().Debug("Seems to be on the same side of the DAO fork")
+				p.GetLog().Debug("Seems to be on the same side of the DAO fork")
 				p.forkDrop.Stop()
 				p.forkDrop = nil
 				return nil
@@ -543,10 +543,10 @@ func (pm *ProtocolManager) handleMsg(p *peer) error {
 
 				// Validate the header and either drop the peer or continue
 				if err := misc.VerifyDAOHeaderExtraData(pm.chainconfig, headers[0]); err != nil {
-					p.Log().Debug("Verified to be on the other side of the DAO fork, dropping")
+					p.GetLog().Debug("Verified to be on the other side of the DAO fork, dropping")
 					return err
 				}
-				p.Log().Debug("Verified to be on the same side of the DAO fork")
+				p.GetLog().Debug("Verified to be on the same side of the DAO fork")
 				return nil
 			}
 			// Irrelevant of the fork checks, send the header to the fetcher just in case
